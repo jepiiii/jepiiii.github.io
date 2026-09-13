@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="dark" />
+<title>ECE Type Review</title>
+<style>
+:root{
+  --bg:#202124;--panel:#292a2d;--panel2:#303236;--text:#d8d8d8;--muted:#777b84;--faint:#4a4d53;
+  --accent:#e2b714;--accent2:#f3cf3f;--term-pending:#8f8854;--bad:#ca4754;--good:#7aa2a9;--warn:#d19a66;--shadow:0 18px 60px rgba(0,0,0,.28);
+  --radius:14px;--max:1120px;
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+body{min-height:100vh} button,input,select,textarea{font:inherit} button{color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{border:0;background:none;cursor:pointer}.app{width:min(var(--max),calc(100% - 40px));margin:auto;min-height:100vh;display:flex;flex-direction:column}
+header{height:88px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:12px;cursor:pointer}.logo{font-size:28px;color:var(--accent);line-height:1}.brand h1{font-size:20px;margin:0;font-weight:700;letter-spacing:-.04em}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.header-actions{display:flex;gap:6px;align-items:center}.icon-btn{padding:9px 11px;border-radius:9px;color:var(--muted)}.icon-btn:hover{background:var(--panel);color:var(--text)}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:16px 0 72px}.view{display:none}.view.active{display:block}
+.setup{max-width:980px;margin:auto}.controlbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;padding:10px 12px;background:var(--panel);border-radius:12px;margin:0 auto 26px;width:max-content;max-width:100%}.segment{display:flex;align-items:center;gap:2px}.divider{width:1px;height:20px;background:#3c3e43;margin:0 5px}.seg-btn{padding:6px 9px;border-radius:7px;color:var(--muted);font-size:12px}.seg-btn:hover{color:var(--text)}.seg-btn.active{color:var(--accent)}
+.setup-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}.card{background:var(--panel);border-radius:var(--radius);padding:20px}.card h2,.card h3{margin:0}.card h2{font-size:14px;color:var(--muted);font-weight:600}.card-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.subtle{color:var(--muted);font-size:12px}.field{display:grid;gap:7px;margin-bottom:15px}.field:last-child{margin-bottom:0}.field label{font-size:11px;color:var(--muted)}
+select,input[type=text],input[type=number],textarea{width:100%;border:1px solid transparent;background:var(--panel2);color:var(--text);border-radius:9px;padding:10px 11px}select:hover,input:hover,textarea:hover{border-color:#45484e}textarea{resize:vertical;min-height:130px;line-height:1.45}.checks{display:flex;flex-wrap:wrap;gap:7px}.check{display:flex;gap:7px;align-items:center;background:var(--panel2);padding:8px 10px;border-radius:8px;font-size:11px;color:var(--muted)}.check input{accent-color:var(--accent)}
+.option-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini-group{background:var(--panel2);padding:12px;border-radius:10px}.mini-group .label{color:var(--muted);font-size:10px;margin-bottom:8px}.choice-row{display:flex;gap:5px;flex-wrap:wrap}.choice{font-size:11px;color:var(--muted);padding:6px 8px;border-radius:6px;background:#26282b}.choice.active{color:var(--accent);background:#34363a}.start-wrap{text-align:center;margin-top:24px}.primary{background:var(--accent);color:#1d1e20;padding:11px 18px;border-radius:9px;font-weight:700}.primary:hover{background:var(--accent2)}.secondary{background:var(--panel2);color:var(--muted);padding:9px 12px;border-radius:8px}.secondary:hover{color:var(--text)}.key-hint{margin-left:7px;color:var(--faint);font-size:9px}.secondary:hover .key-hint{color:var(--muted)}.danger{color:var(--bad)}
+.notice{min-height:20px;text-align:center;color:var(--warn);font-size:11px;margin-top:10px}
+.session{max-width:1000px;margin:auto;position:relative}.session-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;color:var(--muted);font-size:12px}.progress-main{font-size:19px;color:var(--accent)}.session-actions{display:flex;gap:5px}.session-actions button{color:var(--muted);padding:5px 7px}.session-actions button:hover{color:var(--text)}.subject-label{color:var(--muted);font-size:11px;text-align:center;margin-bottom:15px}
+.term{font-size:clamp(32px,4.3vw,48px);font-weight:600;letter-spacing:-.04em;line-height:1.15;color:var(--accent);text-align:center;margin-bottom:26px;position:relative;cursor:text}.term-word{display:inline-block;white-space:nowrap}.term-char{transition:color .085s ease,text-decoration-color .085s ease}.term-char.term-pending{color:var(--term-pending)}.term-char.term-correct{color:var(--accent)}.term-char.term-incorrect{color:var(--bad);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.13em}.term-space{white-space:pre}.term-end-anchor{display:inline-block;width:0;height:1em;vertical-align:baseline}.typing-term-caret{position:absolute;left:0;top:0;width:2px;height:1.05em;border-radius:2px;background:var(--accent2);pointer-events:none;z-index:2;transform:translate3d(0,0,0);transition:transform .075s cubic-bezier(.2,.8,.2,1),height .075s ease;will-change:transform;animation:typingCaretBlink 1s step-end infinite}.typing-term-caret.moving{animation:none;opacity:1}
+.typing-stage{font-size:28px;line-height:1.55;letter-spacing:.01em;max-width:940px;margin:auto;min-height:150px;position:relative;cursor:text;word-break:normal;overflow-wrap:normal}.typing-text{position:relative}.typing-word{display:inline-block;white-space:nowrap}.typing-char{transition:color .085s ease,text-decoration-color .085s ease}.typing-space{white-space:pre}.typing-stage .pending{color:#656970}.typing-stage .correct{color:var(--text)}.typing-stage .incorrect{color:var(--bad);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.13em}.typing-end-anchor{display:inline-block;width:0;height:1em;vertical-align:baseline}.typing-caret{position:absolute;left:0;top:0;width:2px;height:1.15em;border-radius:2px;background:var(--accent);pointer-events:none;z-index:2;transform:translate3d(0,0,0);transition:transform .075s cubic-bezier(.2,.8,.2,1),height .075s ease;will-change:transform;animation:typingCaretBlink 1s step-end infinite}.typing-caret.moving{animation:none;opacity:1}@keyframes typingCaretBlink{0%,48%{opacity:1}49%,100%{opacity:.15}}.capture{position:fixed;left:-9999px;opacity:0;width:1px;height:1px}
+.recall-wrap{max-width:820px;margin:auto}.recall-term{text-align:center;color:var(--text);font-size:clamp(32px,4.3vw,48px);font-weight:600;letter-spacing:-.04em;margin:18px 0 32px;line-height:1.15}.recall-input{min-height:150px;font-size:17px;background:transparent;border:0;border-bottom:2px solid var(--faint);border-radius:0;padding:12px 2px}.recall-input:focus{outline:none;border-bottom-color:var(--accent)}.recall-buttons{display:flex;justify-content:center;gap:8px;margin-top:16px}.answer-panel{background:var(--panel);padding:16px 18px;border-radius:10px;margin-top:18px;line-height:1.55}.answer-panel .label{font-size:10px;color:var(--muted);margin-bottom:7px}.diff{margin-top:12px}.diff .same{color:var(--text)}.diff .miss{color:var(--bad);text-decoration:line-through}.diff .add{color:var(--warn)}
+.paused{position:absolute;inset:40px 0 0;background:rgba(32,33,36,.92);display:flex;align-items:center;justify-content:center;border-radius:15px;font-size:28px;color:var(--accent);z-index:3}
+.results{max-width:980px;margin:auto}.result-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:24px}.hero-stats{display:flex;gap:34px}.stat .k{color:var(--muted);font-size:13px}.stat .v{color:var(--accent);font-size:42px;letter-spacing:-.06em}.result-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.graph-card{padding:16px;background:var(--panel);border-radius:var(--radius);margin-bottom:14px}canvas{width:100%;height:220px;display:block}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}.stat-box{background:var(--panel);border-radius:10px;padding:13px}.stat-box .k{color:var(--muted);font-size:10px}.stat-box .v{font-size:17px;margin-top:4px}.subject-table{width:100%;border-collapse:collapse;font-size:11px}.subject-table th,.subject-table td{text-align:left;padding:9px 8px;border-bottom:1px solid #383a3e}.subject-table th{color:var(--muted);font-weight:500}.subject-table td:nth-child(n+2),.subject-table th:nth-child(n+2){text-align:right}
+.drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:none}.drawer-backdrop.open{display:block}.drawer{position:fixed;right:0;top:0;height:100vh;width:min(580px,100%);background:#242528;box-shadow:var(--shadow);z-index:21;transform:translateX(101%);transition:transform .18s ease;display:flex;flex-direction:column}.drawer.open{transform:translateX(0)}.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #393b40}.drawer-head h2{font-size:15px;margin:0}.drawer-body{padding:18px 20px;overflow:auto;flex:1}.bank-layout{display:grid;grid-template-columns:180px 1fr;gap:14px;height:100%}.bank-list{display:flex;flex-direction:column;gap:6px}.bank-item{display:flex;justify-content:space-between;gap:8px;text-align:left;padding:9px;border-radius:8px;color:var(--muted);background:var(--panel)}.bank-item.active{color:var(--accent);background:#333438}.bank-item small{color:var(--faint)}.toolbar{display:flex;gap:6px;flex-wrap:wrap}.toolbar button{font-size:10px;padding:7px 8px;border-radius:6px;background:var(--panel2);color:var(--muted)}.toolbar button:hover{color:var(--text)}.editor-meta{font-size:10px;color:var(--muted);margin:5px 0 12px}.errors{white-space:pre-wrap;color:var(--bad);font-size:10px;max-height:100px;overflow:auto;margin-top:8px}.history-item{padding:12px 0;border-bottom:1px solid #393b40;display:grid;grid-template-columns:1fr auto;gap:8px}.history-item .meta{color:var(--muted);font-size:10px;margin-top:4px}.history-score{color:var(--accent);text-align:right}.shortcuts{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:12px}.key{background:var(--panel2);border:1px solid #44474c;border-bottom-width:2px;padding:3px 7px;border-radius:5px;color:var(--text);text-align:center}.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;background:#111214;color:var(--text);padding:10px 14px;border-radius:8px;font-size:11px;z-index:40;transition:.18s}.toast.show{opacity:1;transform:translate(-50%,0)}
+footer{text-align:center;color:#4f535a;font-size:10px;padding:18px 0 24px}.hidden{display:none!important}
+@media (max-width:780px){.app{width:min(100% - 24px,var(--max))}header{height:72px}.setup-grid{grid-template-columns:1fr}.controlbar{width:100%}.divider{display:none}.typing-stage{font-size:22px}.result-head{display:block}.hero-stats{margin-bottom:18px}.stats-grid{grid-template-columns:repeat(2,1fr)}.bank-layout{grid-template-columns:1fr}.bank-list{max-height:170px;overflow:auto}.drawer{width:100%}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand" id="brandHome" tabindex="0" role="button" aria-label="Return to setup">
+      <div class="logo">⌁</div><div><h1>ece type review</h1><small>definitions • recall • typing</small></div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="banksBtn" title="Bank manager" aria-label="Open bank manager">banks</button>
+      <button class="icon-btn" id="historyBtn" title="History" aria-label="Open history">history</button>
+      <button class="icon-btn" id="helpBtn" title="Keyboard shortcuts" aria-label="Open keyboard shortcut help">?</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="setupView" class="view setup active" aria-label="Session setup">
+      <div class="controlbar" aria-label="Primary session controls">
+        <div class="segment" data-setting="studyMode">
+          <button class="seg-btn active" data-value="typing">typing</button><button class="seg-btn" data-value="recall">recall</button>
+        </div><div class="divider"></div>
+        <div class="segment" data-setting="sessionType">
+          <button class="seg-btn active" data-value="definitions">definitions</button><button class="seg-btn" data-value="time">time</button>
+        </div><div class="divider"></div>
+        <div id="definitionPresets" class="segment"></div>
+        <div id="timePresets" class="segment hidden"></div>
+      </div>
+
+      <div class="setup-grid">
+        <div class="card">
+          <div class="card-title"><h2>subject banks</h2><button class="secondary" id="manageBanksInline">manage banks</button></div>
+          <div class="field"><label for="bankSource">bank source</label><select id="bankSource"><option value="single">Single Bank</option><option value="selected">Selected Banks</option><option value="all">All Loaded Banks</option></select></div>
+          <div class="field" id="singleBankField"><label for="singleBank">subject</label><select id="singleBank"></select></div>
+          <div class="field hidden" id="selectedBanksField"><label>subjects</label><div class="checks" id="selectedBanksChecks"></div></div>
+          <div class="option-grid" id="mixOptions">
+            <div class="mini-group"><div class="label">mix strategy</div><div class="choice-row" data-setting="mixStrategy"><button class="choice active" data-value="random">random pool</button><button class="choice" data-value="balanced">balanced</button></div></div>
+            <div class="mini-group"><div class="label">repeat policy</div><div class="choice-row" data-setting="repeatPolicy"><button class="choice" data-value="allow">allow repeats</button><button class="choice active" data-value="exhaust">exhaust first</button></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h2>review behavior</h2><span class="subtle" id="activePoolCount">0 definitions</span></div>
+          <div class="field"><label for="matchMode">matching</label><select id="matchMode"><option value="strict">Strict</option><option value="learning">Learning-Friendly</option></select></div>
+          <div class="field" id="customLengthField"><label id="customLengthLabel" for="customLength">custom definitions</label><input id="customLength" type="number" min="1" max="9999" value="10" /></div>
+          <label class="check" id="correctionsOption"><input id="allowCorrections" type="checkbox" checked /> allow corrections while typing</label>
+          <label class="check" id="revealOption"><input id="revealAllowed" type="checkbox" checked /> enable reveal answer</label>
+        </div>
+      </div>
+      <div class="start-wrap"><button class="primary" id="startBtn">start review</button><div class="notice" id="setupNotice" aria-live="polite"></div></div>
+    </section>
+
+    <section id="sessionView" class="view session" aria-label="Active review session">
+      <div class="session-top"><div><span class="progress-main" id="progressMain">0 / 0</span> <span id="progressSub"></span></div><div class="session-actions"><button id="pauseBtn">pause</button><button id="restartBtn">restart</button><button id="newSessionBtn">new session</button></div></div>
+      <div id="pausedOverlay" class="paused hidden">paused</div>
+      <div class="subject-label" id="subjectLabel"></div>
+      <div id="typingArea" class="hidden"><div class="term" id="typingTerm"></div><div class="typing-stage" id="typingStage" tabindex="0" aria-label="Typing area"><div class="typing-text" id="typingText"></div><span class="typing-caret" id="typingCaret" aria-hidden="true"></span></div><textarea id="typingCapture" class="capture" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea><div class="recall-buttons"><button class="secondary" id="typingRetryBtn">retry current attempt <span class="key-hint">enter</span></button></div></div>
+      <div id="recallArea" class="recall-wrap hidden"><div class="recall-term" id="recallTerm"></div><textarea id="recallInput" class="recall-input" placeholder="type the definition from memory…" spellcheck="false"></textarea><div class="recall-buttons" id="recallActionRow"><button class="primary" id="submitRecallBtn">submit</button><button class="secondary" id="revealBtn">reveal</button><button class="secondary" id="recallRetryBtn">retry current attempt <span class="key-hint">enter</span></button></div><div id="answerPanel" class="answer-panel hidden"><div class="label">reference answer</div><div id="correctAnswer"></div><div id="diffOutput" class="diff"></div><div class="recall-buttons"><button class="primary" id="nextRecallBtn">next</button></div></div></div>
+    </section>
+
+    <section id="resultsView" class="view results" aria-label="Session results">
+      <div class="result-head"><div class="hero-stats"><div class="stat"><div class="k">wpm</div><div class="v" id="resultWpm">0</div></div><div class="stat"><div class="k">accuracy</div><div class="v" id="resultAccuracy">0%</div></div></div><div class="result-actions"><button class="primary" id="retryBtn">retry</button><button class="secondary" id="retryRandomBtn">retry randomized</button><button class="secondary" id="resultNewBtn">new session</button></div></div>
+      <div class="graph-card"><canvas id="performanceGraph" width="900" height="220" aria-label="Performance graph"></canvas></div>
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="card"><div class="card-title"><h2>subject breakdown</h2><span class="subtle" id="resultSessionLabel"></span></div><div id="subjectBreakdown"></div></div>
+    </section>
+  </main>
+  <footer>offline-first • your banks and history stay in this browser</footer>
+</div>
+
+<div id="drawerBackdrop" class="drawer-backdrop"></div>
+<aside id="banksDrawer" class="drawer" aria-hidden="true"><div class="drawer-head"><h2>bank manager</h2><button class="icon-btn close-drawer">close</button></div><div class="drawer-body"><div class="bank-layout"><div><div class="toolbar" style="margin-bottom:8px"><button id="newBankBtn">+ new</button><button id="importBankBtn">import</button><input id="fileInput" class="hidden" type="file" accept=".txt,.json,text/plain,application/json" multiple /></div><div class="bank-list" id="bankList"></div><div class="toolbar" style="margin-top:10px"><button id="exportAllBtn">backup all</button><button id="importBackupBtn">restore backup</button></div></div><div><div class="field"><label for="bankNameEditor">bank name</label><input id="bankNameEditor" type="text" /></div><div class="editor-meta" id="bankEditorMeta"></div><textarea id="bankTextEditor" placeholder="Term | Definition\nTerm | Definition"></textarea><div class="toolbar" style="margin-top:8px"><button id="saveBankBtn">save bank</button><button id="duplicateBankBtn">duplicate</button><button id="exportTxtBtn">export .txt</button><button id="exportJsonBtn">export .json</button><button id="deleteBankBtn" class="danger">delete</button></div><div id="bankErrors" class="errors"></div></div></div></div></aside>
+<aside id="historyDrawer" class="drawer" aria-hidden="true"><div class="drawer-head"><h2>recent sessions</h2><button class="icon-btn close-drawer">close</button></div><div class="drawer-body"><div id="historyList"></div><div class="toolbar" style="margin-top:14px"><button id="clearHistoryBtn" class="danger">clear history</button></div></div></aside>
+<aside id="helpDrawer" class="drawer" aria-hidden="true"><div class="drawer-head"><h2>keyboard shortcuts</h2><button class="icon-btn close-drawer">close</button></div><div class="drawer-body"><div class="shortcuts"><div class="key">Enter</div><div>retry the current attempt from the beginning</div><div class="key">Tab</div><div>submit the active Recall response</div><div class="key">Esc</div><div>restart/cancel prompt during a session</div><div class="key">R</div><div>retry from results</div><div class="key">N</div><div>new session from results</div><div class="key">Click</div><div>refocus the typing area</div></div></div></aside>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* TESTABLE_CORE_START */
+function parseTextBank(text) {
+  const entries = [], errors = [], seen = new Set();
+  String(text ?? '').split(/\r?\n/).forEach((raw, idx) => {
+    const line = raw.trim();
+    if (!line) return;
+    const splitAt = line.indexOf('|');
+    if (splitAt < 0) { errors.push(`Line ${idx + 1}: missing "|" separator.`); return; }
+    const term = line.slice(0, splitAt).trim();
+    const definition = line.slice(splitAt + 1).trim();
+    if (!term || !definition) { errors.push(`Line ${idx + 1}: term and definition are both required.`); return; }
+    const key = `${term.toLocaleLowerCase()}\u0000${definition.toLocaleLowerCase()}`;
+    if (seen.has(key)) { errors.push(`Line ${idx + 1}: duplicate entry skipped.`); return; }
+    seen.add(key); entries.push({ term, definition });
+  });
+  return { entries, errors };
+}
+
+function normalizeLearningText(text) {
+  return String(text ?? '')
+    .normalize('NFKC')
+    .toLocaleLowerCase()
+    .replace(/[\u2010-\u2015]/g, ' ')
+    .replace(/[.,!?;:'"`~()[\]{}]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function compareTexts(actual, expected, mode = 'strict') {
+  const a = mode === 'learning' ? normalizeLearningText(actual) : String(actual ?? '');
+  const e = mode === 'learning' ? normalizeLearningText(expected) : String(expected ?? '');
+  const max = Math.max(a.length, e.length);
+  let same = 0;
+  for (let i = 0; i < Math.min(a.length, e.length); i++) if (a[i] === e[i]) same++;
+  return { isExact: a === e, actual: a, expected: e, similarity: max ? same / max : 1 };
+}
+
+function shuffleCopy(items, rng = Math.random) {
+  const out = items.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+function enrichBanks(banks) {
+  return banks.map(bank => ({...bank, entries: bank.entries.map((entry, i) => ({...entry, bankId: bank.id, bankName: bank.name, entryIndex: i}))}));
+}
+
+function buildSequence(banks, config, rng = Math.random) {
+  const enriched = enrichBanks(banks.filter(b => Array.isArray(b.entries) && b.entries.length));
+  const target = Math.max(0, Number(config.targetCount) || 0);
+  if (!target || !enriched.length) return [];
+  const result = [];
+  const balanced = config.mixStrategy === 'balanced';
+  const allow = config.repeatPolicy === 'allow';
+
+  if (allow) {
+    if (!balanced) {
+      const pool = enriched.flatMap(b => b.entries);
+      for (let i = 0; i < target; i++) result.push({...pool[Math.floor(rng() * pool.length)]});
+    } else {
+      const order = shuffleCopy(enriched, rng);
+      for (let i = 0; i < target; i++) {
+        const bank = order[i % order.length];
+        result.push({...bank.entries[Math.floor(rng() * bank.entries.length)]});
+      }
+    }
+    return result;
+  }
+
+  while (result.length < target) {
+    if (!balanced) {
+      const cycle = shuffleCopy(enriched.flatMap(b => b.entries), rng);
+      for (const item of cycle) { result.push({...item}); if (result.length >= target) break; }
+    } else {
+      const queues = new Map(enriched.map(b => [b.id, shuffleCopy(b.entries, rng)]));
+      const bankOrder = shuffleCopy(enriched.map(b => b.id), rng);
+      let remaining = [...bankOrder];
+      while (remaining.length && result.length < target) {
+        const nextRound = [];
+        for (const id of remaining) {
+          const queue = queues.get(id);
+          const item = queue.shift();
+          if (item) result.push({...item});
+          if (queue.length) nextRound.push(id);
+          if (result.length >= target) break;
+        }
+        remaining = nextRound;
+      }
+    }
+  }
+  return result;
+}
+
+function computeStats({ elapsedMs = 0, correctChars = 0, incorrectChars = 0, rawChars = 0, samples = [] }) {
+  const minutes = Math.max(elapsedMs, 1) / 60000;
+  const wpm = +(correctChars / 5 / minutes).toFixed(2);
+  const rawWpm = +(rawChars / 5 / minutes).toFixed(2);
+  const denom = correctChars + incorrectChars;
+  const accuracy = +(denom ? correctChars / denom * 100 : 100).toFixed(2);
+  let consistency = 100;
+  if (samples.length > 1) {
+    const mean = samples.reduce((a,b)=>a+b,0) / samples.length;
+    const variance = samples.reduce((a,b)=>a + (b - mean) ** 2,0) / samples.length;
+    const sd = Math.sqrt(variance);
+    consistency = mean > 0 ? Math.max(0, Math.min(100, 100 - (sd / mean) * 100)) : 100;
+  }
+  return { wpm, rawWpm, accuracy, consistency: +consistency.toFixed(2) };
+}
+
+function makeTypingTarget(term, definition) {
+  term = String(term ?? '');
+  definition = String(definition ?? '');
+  return { term, definition, expected: term + definition, termLength: term.length, definitionLength: definition.length, totalLength: term.length + definition.length };
+}
+function splitTypingInput(input, termLength, definitionLength) {
+  input = String(input ?? '');
+  const start = Math.max(0, termLength);
+  return {termInput:input.slice(0,start),definitionInput:input.slice(start,start + Math.max(0,definitionLength))};
+}
+function classifyTypingChars(input, reference) {
+  input = String(input ?? ''); reference = String(reference ?? '');
+  return Array.from(reference, (ch,i)=>i<input.length?(input[i]===ch?'correct':'incorrect'):'pending');
+}
+/* TESTABLE_CORE_END */
+
+const STORAGE = { banks:'eceTypeReview.banks.v2', settings:'eceTypeReview.settings.v2', history:'eceTypeReview.history.v2' };
+const DEFAULT_BANKS = [{ id:'demo-electronics', name:'Demo — Electronics Basics', entries:[
+  {term:"Ohm's Law",definition:'The voltage across a conductor equals the current through it multiplied by its resistance.'},
+  {term:'Reactance',definition:'The opposition that capacitance or inductance presents to alternating current.'},
+  {term:'Bandwidth',definition:'The range of frequencies occupied, passed, or supported by a system.'},
+  {term:'Kirchhoff’s Current Law',definition:'The algebraic sum of currents entering and leaving a node is zero.'},
+  {term:'Gain',definition:'The ratio of an output signal quantity to the corresponding input signal quantity.'}
+]}];
+const DEFAULT_SETTINGS = { studyMode:'typing',sessionType:'definitions',definitionPreset:'10',customDefinitionCount:10,timePreset:'60',customTime:60,bankSource:'single',singleBankId:'demo-electronics',selectedBankIds:['demo-electronics'],mixStrategy:'random',repeatPolicy:'exhaust',matchMode:'strict',allowCorrections:true,revealAllowed:true };
+const state = { banks:[],settings:{...DEFAULT_SETTINGS},history:[],activeBankId:null,session:null,lastSession:null,view:'setup',toastTimer:null };
+
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+function safeParse(raw, fallback){try{return raw?JSON.parse(raw):fallback}catch{return fallback}}
+function loadPersistedState(){
+  const banks = safeParse(localStorage.getItem(STORAGE.banks), null);
+  state.banks = Array.isArray(banks) && banks.length ? banks : structuredClone(DEFAULT_BANKS);
+  state.settings = {...DEFAULT_SETTINGS, ...safeParse(localStorage.getItem(STORAGE.settings), {})};
+  state.history = safeParse(localStorage.getItem(STORAGE.history), []); if(!Array.isArray(state.history)) state.history=[];
+  if (!state.banks.some(b=>b.id===state.settings.singleBankId)) state.settings.singleBankId=state.banks[0]?.id||'';
+  state.settings.selectedBankIds = (state.settings.selectedBankIds||[]).filter(id=>state.banks.some(b=>b.id===id));
+  if(!state.settings.selectedBankIds.length && state.banks[0]) state.settings.selectedBankIds=[state.banks[0].id];
+  state.activeBankId = state.settings.singleBankId || state.banks[0]?.id || null;
+}
+function storageWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(err){notify('Browser storage is full or unavailable. Export a backup before continuing.'); if(confirm('Storage failed. Export a backup now?')) exportBackup(); return false}}
+function saveBanks(){return storageWrite(STORAGE.banks,state.banks)} function saveSettings(){return storageWrite(STORAGE.settings,state.settings)} function saveHistory(){return storageWrite(STORAGE.history,state.history)}
+function makeId(prefix='bank'){return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`}
+function notify(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>t.classList.remove('show'),2600)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function filenameSafe(name){return String(name||'bank').replace(/[^a-z0-9-_]+/gi,'_').replace(/^_+|_+$/g,'')||'bank'}
+function download(name,text,type){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function validateBank(bank){
+  const errors=[]; if(!bank||typeof bank!=='object') return {ok:false,errors:['Bank must be an object.']};
+  if(!String(bank.name||'').trim()) errors.push('Bank name is required.');
+  if(!Array.isArray(bank.entries)) errors.push('Entries must be an array.');
+  else bank.entries.forEach((e,i)=>{if(!String(e?.term||'').trim()||!String(e?.definition||'').trim())errors.push(`Entry ${i+1}: term and definition are required.`)});
+  return {ok:!errors.length,errors};
+}
+function bankToText(bank){return bank.entries.map(e=>`${e.term} | ${e.definition}`).join('\n')}
+function uniqueBankName(name, excludeId=null){const base=String(name||'Untitled Bank').trim();if(!state.banks.some(b=>b.id!==excludeId&&b.name===base))return base;let n=2;while(state.banks.some(b=>b.id!==excludeId&&b.name===`${base} (${n})`))n++;return `${base} (${n})`}
+
+function renderSetup(){
+  const s=state.settings;
+  $$('#setupView [data-setting]').forEach(group=>{const key=group.dataset.setting;group.querySelectorAll('[data-value]').forEach(b=>b.classList.toggle('active',b.dataset.value===s[key]))});
+  const defs=['5','10','20','50','all','custom'], times=['15','30','60','120','custom'];
+  $('#definitionPresets').innerHTML=defs.map(v=>`<button class="seg-btn ${s.definitionPreset===v?'active':''}" data-preset="definition" data-value="${v}">${v}</button>`).join('');
+  $('#timePresets').innerHTML=times.map(v=>`<button class="seg-btn ${s.timePreset===v?'active':''}" data-preset="time" data-value="${v}">${v==='custom'?'custom':v+'s'}</button>`).join('');
+  $('#definitionPresets').classList.toggle('hidden',s.sessionType!=='definitions'); $('#timePresets').classList.toggle('hidden',s.sessionType!=='time');
+  $('#bankSource').value=s.bankSource; $('#matchMode').value=s.matchMode; $('#allowCorrections').checked=s.allowCorrections; $('#revealAllowed').checked=s.revealAllowed;
+  $('#singleBank').innerHTML=state.banks.length?state.banks.map(b=>`<option value="${esc(b.id)}">${esc(b.name)} (${b.entries.length})</option>`).join(''):'<option value="">No banks loaded</option>'; $('#singleBank').value=s.singleBankId;
+  $('#selectedBanksChecks').innerHTML=state.banks.map(b=>`<label class="check"><input type="checkbox" data-bank-check="${esc(b.id)}" ${s.selectedBankIds.includes(b.id)?'checked':''}/> ${esc(b.name)} <span>(${b.entries.length})</span></label>`).join('')||'<span class="subtle">No banks loaded.</span>';
+  $('#singleBankField').classList.toggle('hidden',s.bankSource!=='single'); $('#selectedBanksField').classList.toggle('hidden',s.bankSource!=='selected');
+  const multi=s.bankSource!=='single'; $('#mixOptions').style.opacity=multi?'1':'.62';
+  const custom=s.sessionType==='definitions'?s.definitionPreset==='custom':s.timePreset==='custom'; $('#customLengthField').classList.toggle('hidden',!custom);
+  $('#customLengthLabel').textContent=s.sessionType==='definitions'?'custom definitions':'custom seconds'; $('#customLength').value=s.sessionType==='definitions'?s.customDefinitionCount:s.customTime;
+  $('#revealOption').classList.toggle('hidden',s.studyMode!=='recall'); $('#correctionsOption').classList.toggle('hidden',s.studyMode!=='typing');
+  const pool=getSelectedBanks(s).reduce((n,b)=>n+b.entries.length,0); $('#activePoolCount').textContent=`${pool} definition${pool===1?'':'s'}`;
+  const notice=[]; if(!pool)notice.push('Load or select at least one bank before starting.');
+  if(s.sessionType==='definitions'&&s.definitionPreset!=='all'){const n=s.definitionPreset==='custom'?s.customDefinitionCount:+s.definitionPreset;if(s.repeatPolicy==='exhaust'&&n>pool&&pool)notice.push(`This session will begin a new cycle after all ${pool} unique definitions appear.`)}
+  $('#setupNotice').textContent=notice.join(' ');
+}
+function getSelectedBanks(settings=state.settings){if(settings.bankSource==='all')return state.banks.slice();if(settings.bankSource==='selected')return state.banks.filter(b=>settings.selectedBankIds.includes(b.id));return state.banks.filter(b=>b.id===settings.singleBankId)}
+function switchView(name){state.view=name; $$('.view').forEach(v=>v.classList.toggle('active',v.id===`${name}View`)); window.scrollTo({top:0,behavior:'smooth'})}
+function updateModeDefault(previous,newMode){if(previous!==newMode){state.settings.matchMode=newMode==='recall'?'learning':'strict'}}
+
+function renderBankManager(){
+  if(state.activeBankId&&!state.banks.some(b=>b.id===state.activeBankId))state.activeBankId=state.banks[0]?.id||null;
+  $('#bankList').innerHTML=state.banks.map(b=>`<button class="bank-item ${b.id===state.activeBankId?'active':''}" data-bank-id="${esc(b.id)}"><span>${esc(b.name)}</span><small>${b.entries.length}</small></button>`).join('')||'<span class="subtle">No banks yet.</span>';
+  const b=state.banks.find(x=>x.id===state.activeBankId); const disabled=!b;
+  $('#bankNameEditor').disabled=disabled;$('#bankTextEditor').disabled=disabled;['saveBankBtn','duplicateBankBtn','exportTxtBtn','exportJsonBtn','deleteBankBtn'].forEach(id=>$('#'+id).disabled=disabled);
+  if(b){$('#bankNameEditor').value=b.name;$('#bankTextEditor').value=bankToText(b);$('#bankEditorMeta').textContent=`${b.entries.length} definitions • plain text format: Term | Definition`;}else{$('#bankNameEditor').value='';$('#bankTextEditor').value='';$('#bankEditorMeta').textContent='Create or import a bank to begin.'} $('#bankErrors').textContent='';
+}
+function mutateBanks(mutator){const old=structuredClone(state.banks);mutator();if(!saveBanks()){state.banks=old;return false}renderSetup();renderBankManager();return true}
+function saveActiveBank(){const b=state.banks.find(x=>x.id===state.activeBankId);if(!b)return;const parsed=parseTextBank($('#bankTextEditor').value);const name=$('#bankNameEditor').value.trim();const errs=[...parsed.errors];if(!name)errs.unshift('Bank name is required.');if(!parsed.entries.length)errs.push('At least one valid entry is required.');const dupName=state.banks.find(x=>x.id!==b.id&&x.name.toLocaleLowerCase()===name.toLocaleLowerCase());if(dupName)errs.unshift(`A bank named "${name}" already exists.`);$('#bankErrors').textContent=errs.join('\n');if(!name||!parsed.entries.length||dupName)return;mutateBanks(()=>{b.name=name;b.entries=parsed.entries});notify(parsed.errors.length?'Bank saved; invalid lines were skipped.':'Bank saved.');}
+function newBank(){const id=makeId();mutateBanks(()=>state.banks.push({id,name:uniqueBankName('New Subject Bank'),entries:[]}));state.activeBankId=id;renderBankManager();$('#bankNameEditor').focus()}
+function duplicateBank(){const b=state.banks.find(x=>x.id===state.activeBankId);if(!b)return;const copy={id:makeId(),name:uniqueBankName(`${b.name} Copy`),entries:structuredClone(b.entries)};mutateBanks(()=>state.banks.push(copy));state.activeBankId=copy.id;renderBankManager();notify('Bank duplicated.')}
+function deleteBank(){const b=state.banks.find(x=>x.id===state.activeBankId);if(!b||!confirm(`Delete "${b.name}"?`))return;mutateBanks(()=>{state.banks=state.banks.filter(x=>x.id!==b.id);state.activeBankId=state.banks[0]?.id||null;state.settings.selectedBankIds=state.settings.selectedBankIds.filter(id=>id!==b.id);if(state.settings.singleBankId===b.id)state.settings.singleBankId=state.banks[0]?.id||'';saveSettings()});notify('Bank deleted.')}
+function exportBankText(bank){download(`${filenameSafe(bank.name)}.txt`,bankToText(bank),'text/plain;charset=utf-8')} function exportBankJson(bank){download(`${filenameSafe(bank.name)}.json`,JSON.stringify({name:bank.name,entries:bank.entries},null,2),'application/json')}
+function exportBackup(){download(`ece_type_review_backup_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify({schema:'ece-typing-reviewer-backup',version:1,banks:state.banks,settings:state.settings,history:state.history},null,2),'application/json')}
+async function importFiles(files){
+  const existingNames=new Set(state.banks.map(b=>b.name.toLocaleLowerCase())); const additions=[]; const messages=[];
+  for(const file of files){try{const text=await file.text();if(file.name.toLowerCase().endsWith('.txt')){const p=parseTextBank(text);const name=file.name.replace(/\.txt$/i,'').replace(/[_-]+/g,' ').trim()||'Imported Bank';if(!p.entries.length){messages.push(`${file.name}: no valid entries.`);continue}if(existingNames.has(name.toLocaleLowerCase())){messages.push(`${file.name}: duplicate bank name "${name}".`);continue}additions.push({id:makeId(),name,entries:p.entries});existingNames.add(name.toLocaleLowerCase());if(p.errors.length)messages.push(`${file.name}: ${p.errors.length} invalid line(s) skipped.`)}else{const data=JSON.parse(text);if(data?.schema==='ece-typing-reviewer-backup'){const candidate=Array.isArray(data.banks)?data.banks:[];const invalid=candidate.flatMap((b,i)=>validateBank(b).errors.map(e=>`Bank ${i+1}: ${e}`));if(invalid.length){messages.push(`${file.name}: backup rejected — ${invalid[0]}`);continue}const names=candidate.map(b=>b.name.toLocaleLowerCase());if(new Set(names).size!==names.length){messages.push(`${file.name}: backup rejected — duplicate bank names.`);continue}const old={banks:state.banks,settings:state.settings,history:state.history};state.banks=candidate.map(b=>({id:b.id||makeId(),name:b.name,entries:b.entries.map(e=>({term:e.term,definition:e.definition}))}));state.settings={...DEFAULT_SETTINGS,...(data.settings||{})};state.history=Array.isArray(data.history)?data.history.slice(0,50):[];if(!(saveBanks()&&saveSettings()&&saveHistory())){state.banks=old.banks;state.settings=old.settings;state.history=old.history}else{state.activeBankId=state.banks[0]?.id||null;messages.push(`${file.name}: backup restored.`)}continue}
+        const v=validateBank(data);if(!v.ok){messages.push(`${file.name}: ${v.errors[0]}`);continue}if(existingNames.has(data.name.toLocaleLowerCase())){messages.push(`${file.name}: duplicate bank name "${data.name}".`);continue}additions.push({id:makeId(),name:data.name,entries:data.entries.map(e=>({term:e.term,definition:e.definition}))});existingNames.add(data.name.toLocaleLowerCase())}}
+    catch(err){messages.push(`${file.name}: ${err.message}`)}}
+  if(additions.length)mutateBanks(()=>state.banks.push(...additions)); if(additions.length)state.activeBankId=additions[additions.length-1].id; renderBankManager();renderSetup();notify(messages.length?messages.join(' • '):`${additions.length} bank(s) imported.`)
+}
+
+function activeTargetCount(config,banks){const pool=banks.reduce((n,b)=>n+b.entries.length,0);if(config.sessionType==='time')return Math.max(1000,pool*30);if(config.definitionPreset==='all')return pool;return Math.max(1,config.definitionPreset==='custom'?Number(config.customDefinitionCount)||1:Number(config.definitionPreset)||10)}
+function sessionConfig(){return structuredClone(state.settings)}
+function startSession(options={}){
+  const config=options.config?structuredClone(options.config):sessionConfig();const banks=getSelectedBanks(config);const pool=banks.reduce((n,b)=>n+b.entries.length,0);if(!pool){notify('Select at least one bank with definitions.');return}
+  let queue;if(options.order){const lookup=new Map(banks.flatMap(b=>b.entries.map((e,i)=>[`${b.id}:${i}`,{...e,bankId:b.id,bankName:b.name,entryIndex:i}])));queue=options.order.map(k=>lookup.get(k)).filter(Boolean);if(!queue.length)queue=buildSequence(banks,{...config,targetCount:activeTargetCount(config,banks)})}else queue=buildSequence(banks,{...config,targetCount:activeTargetCount(config,banks)});
+  const now=performance.now(); state.session={config,banks,queue,index:0,processed:0,startedAt:now,itemStartedAt:now,paused:false,pauseStartedAt:0,pausedMs:0,timerId:null,sampleTimer:null,rawChars:0,correctChars:0,incorrectChars:0,completed:0,missed:0,skipped:0,revealed:0,incomplete:0,samples:[],accuracySamples:[],subjectStats:{},feedback:false,lastInput:'',ended:false};
+  $('#pauseBtn').classList.toggle('hidden',config.sessionType==='time'); $('#pauseBtn').textContent='pause'; $('#pausedOverlay').classList.add('hidden');
+  switchView('session'); renderSessionEntry(); startSessionTimers();
+}
+function startSessionTimers(){const s=state.session;if(!s)return;clearInterval(s.timerId);clearInterval(s.sampleTimer);s.timerId=setInterval(tickSession,100);s.sampleTimer=setInterval(recordSample,1000)}
+function elapsedMs(){const s=state.session;if(!s)return 0;const now=performance.now();return Math.max(0,(s.ended?s.endedAt:now)-s.startedAt-s.pausedMs-(s.paused?now-s.pauseStartedAt:0))}
+function currentEntry(){return state.session?.queue[state.session.index]||null}
+function renderSessionEntry(){const s=state.session,e=currentEntry();if(!s||!e){endSession();return}s.feedback=false;s.lastInput='';s.itemStartedAt=performance.now();$('#subjectLabel').textContent=e.bankName;$('#typingArea').classList.toggle('hidden',s.config.studyMode!=='typing');$('#recallArea').classList.toggle('hidden',s.config.studyMode!=='recall');$('#revealBtn').classList.toggle('hidden',!s.config.revealAllowed);$('#answerPanel').classList.add('hidden');$('#recallActionRow').classList.remove('hidden');$('#recallInput').value='';$('#typingCapture').value='';
+  if(s.config.studyMode==='typing'){const target=makeTypingTarget(e.term,e.definition);$('#typingCapture').maxLength=target.totalLength;renderTypingTerm('',e.term,true);renderTypingText('',e.definition,true,false);setTimeout(()=>$('#typingCapture').focus(),0)} else {$('#recallTerm').textContent=e.term;setTimeout(()=>$('#recallInput').focus(),0)} updateProgress();}
+function buildCharReference(container,reference,{charClass,spaceClass,wordClass,endClass,stateClass,indexAttr}){const chunks=reference.match(/\S+\s*|\s+/g)||[];let index=0,html='';for(const chunk of chunks){const wrapper=/^\s+$/.test(chunk)?`${wordClass}-whitespace`:wordClass;html+=`<span class="${wrapper}">`;for(const ch of chunk){const space=/\s/.test(ch);const shown=ch===' '?'\u00a0':ch==='\t'?'\u00a0\u00a0\u00a0\u00a0':ch;html+=`<span class="${charClass}${space?' '+spaceClass:''} ${stateClass}" ${indexAttr}="${index}">${esc(shown)}</span>`;index++}html+='</span>'}html+=`<span class="${endClass}" ${indexAttr}="${reference.length}"></span>`;container.innerHTML=html;container.dataset.reference=reference}
+function buildTypingTerm(reference){const term=$('#typingTerm');buildCharReference(term,reference,{charClass:'term-char',spaceClass:'term-space',wordClass:'term-word',endClass:'term-end-anchor',stateClass:'term-pending',indexAttr:'data-term-char-index'});term.insertAdjacentHTML('beforeend','<span class="typing-term-caret" id="typingTermCaret" aria-hidden="true"></span>')}
+function moveTypingTermCaret(index,instant=false){const term=$('#typingTerm'),caret=$('#typingTermCaret');if(!term||!caret)return;if(index>=Number(term.dataset.reference?.length||0)){caret.style.visibility='hidden';return}const anchor=term.querySelector(`[data-term-char-index="${index}"]`)||term.querySelector('.term-end-anchor');if(!anchor)return;caret.style.visibility='visible';const tr=term.getBoundingClientRect(),ar=anchor.getBoundingClientRect();const x=ar.left-tr.left;const h=Math.max(24,ar.height||parseFloat(getComputedStyle(term).fontSize));const y=ar.top-tr.top+Math.max(0,(ar.height-h)/2);if(instant){caret.style.transition='none';caret.style.transform=`translate3d(${x}px,${y}px,0)`;caret.style.height=`${h}px`;requestAnimationFrame(()=>{caret.style.transition=''})}else{caret.style.transform=`translate3d(${x}px,${y}px,0)`;caret.style.height=`${h}px`}caret.classList.add('moving');clearTimeout(moveTypingTermCaret._idleTimer);moveTypingTermCaret._idleTimer=setTimeout(()=>caret.classList.remove('moving'),140)}
+function renderTypingTerm(input,reference,reset=false){const term=$('#typingTerm');if(reset||term.dataset.reference!==reference)buildTypingTerm(reference);const states=classifyTypingChars(input,reference);const chars=term.querySelectorAll('.term-char');chars.forEach((node,i)=>{node.classList.remove('term-pending','term-correct','term-incorrect');node.classList.add(`term-${states[i]}`)});moveTypingTermCaret(Math.min(input.length,reference.length),reset)}
+function buildTypingReference(reference){const text=$('#typingText');buildCharReference(text,reference,{charClass:'typing-char',spaceClass:'typing-space',wordClass:'typing-word',endClass:'typing-end-anchor',stateClass:'pending',indexAttr:'data-char-index'})}
+function moveTypingCaret(index,instant=false){const stage=$('#typingStage'),text=$('#typingText'),caret=$('#typingCaret');const anchor=text.querySelector(`[data-char-index="${index}"]`)||text.querySelector('.typing-end-anchor');if(!stage||!anchor||!caret)return;const sr=stage.getBoundingClientRect(),ar=anchor.getBoundingClientRect();const x=ar.left-sr.left;const h=Math.max(20,ar.height||parseFloat(getComputedStyle(stage).fontSize)*1.2);const y=ar.top-sr.top+Math.max(0,(ar.height-h)/2);if(instant){caret.style.transition='none';caret.style.transform=`translate3d(${x}px,${y}px,0)`;caret.style.height=`${h}px`;requestAnimationFrame(()=>{caret.style.transition=''})}else{caret.style.transform=`translate3d(${x}px,${y}px,0)`;caret.style.height=`${h}px`}caret.classList.add('moving');clearTimeout(moveTypingCaret._idleTimer);moveTypingCaret._idleTimer=setTimeout(()=>caret.classList.remove('moving'),140)}
+function renderTypingText(input,reference,reset=false,active=true){const text=$('#typingText'),caret=$('#typingCaret');if(reset||text.dataset.reference!==reference)buildTypingReference(reference);const states=classifyTypingChars(input,reference),chars=text.querySelectorAll('.typing-char');chars.forEach((node,i)=>{node.classList.remove('pending','correct','incorrect');node.classList.add(states[i])});caret.style.visibility=active?'visible':'hidden';if(active)moveTypingCaret(Math.min(input.length,reference.length),reset)}
+function rawCharDelta(prev,next){let common=0;while(common<prev.length&&common<next.length&&prev[common]===next[common])common++;return Math.max(0,next.length-common)}
+function charMetrics(actual,expected,mode){const c=compareTexts(actual,expected,mode);const a=c.actual,e=c.expected;const max=Math.max(a.length,e.length);let correct=0;for(let i=0;i<max;i++)if(a[i]!==undefined&&a[i]===e[i])correct++;return{correct,incorrect:max-correct,total:max,exact:c.isExact,similarity:c.similarity}}
+function handleTypingInput(){const s=state.session;if(!s||s.paused)return;const e=currentEntry(),target=makeTypingTarget(e.term,e.definition),input=$('#typingCapture').value;s.rawChars+=rawCharDelta(s.lastInput,input);s.lastInput=input;const parts=splitTypingInput(input,target.termLength,target.definitionLength);const termDone=parts.termInput.length>=target.termLength;renderTypingTerm(parts.termInput,e.term);renderTypingText(parts.definitionInput,e.definition,false,termDone);if(input.length>=target.totalLength){const finalInput=input.slice(0,target.totalLength);const m=charMetrics(finalInput,target.expected,s.config.matchMode);finalizeEntry({status:m.exact?'completed':'missed',metrics:m});}}
+function subjectBucket(entry){const s=state.session;return s.subjectStats[entry.bankId]||(s.subjectStats[entry.bankId]={name:entry.bankName,count:0,correctChars:0,incorrectChars:0,missed:0})}
+function finalizeEntry({status,metrics=null}){const s=state.session,e=currentEntry();if(!s||!e||s.feedback)return;const bucket=subjectBucket(e);bucket.count++;s.processed++;
+  if(metrics){s.correctChars+=metrics.correct;s.incorrectChars+=metrics.incorrect;bucket.correctChars+=metrics.correct;bucket.incorrectChars+=metrics.incorrect}
+  if(status==='completed'){s.completed++}else if(status==='missed'){s.missed++;bucket.missed++}else if(status==='skipped'){s.skipped++;s.missed++;bucket.missed++}else if(status==='revealed'){s.revealed++;s.missed++;bucket.missed++}
+  if(s.config.studyMode==='recall'&&(status==='completed'||status==='missed'||status==='revealed')){s.feedback=true;showRecallFeedback(status);updateProgress();return}
+  advanceEntry();}
+function advanceEntry(){const s=state.session;if(!s)return;s.index++;if(s.config.sessionType==='definitions'&&s.processed>=targetDefinitionCount(s)){endSession();return}if(s.index>=s.queue.length){endSession();return}renderSessionEntry()}
+function targetDefinitionCount(s){const pool=s.banks.reduce((n,b)=>n+b.entries.length,0);if(s.config.definitionPreset==='all')return pool;return Math.max(1,s.config.definitionPreset==='custom'?Number(s.config.customDefinitionCount)||1:Number(s.config.definitionPreset)||10)}
+function submitRecall(){const s=state.session;if(!s||s.feedback||s.paused)return;const e=currentEntry(),actual=$('#recallInput').value;s.rawChars+=Math.max(0,actual.length-s.lastInput.length);s.lastInput=actual;const m=charMetrics(actual,e.definition,s.config.matchMode);finalizeEntry({status:m.exact?'completed':'missed',metrics:m})}
+function tokenizeWords(text){return String(text).trim().split(/\s+/).filter(Boolean)}
+function diffWords(actual,expected){const a=tokenizeWords(actual),b=tokenizeWords(expected),dp=Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));for(let i=a.length-1;i>=0;i--)for(let j=b.length-1;j>=0;j--)dp[i][j]=a[i]===b[j]?1+dp[i+1][j+1]:Math.max(dp[i+1][j],dp[i][j+1]);let i=0,j=0,out=[];while(i<a.length||j<b.length){if(i<a.length&&j<b.length&&a[i]===b[j]){out.push(`<span class="same">${esc(b[j])}</span>`);i++;j++}else if(j<b.length&&(i===a.length||dp[i][j+1]>=(dp[i+1]?.[j]??-1))){out.push(`<span class="add">${esc(b[j])}</span>`);j++}else{out.push(`<span class="miss">${esc(a[i])}</span>`);i++}}return out.join(' ')}
+function showRecallFeedback(status){const e=currentEntry();$('#correctAnswer').textContent=e.definition;const actual=$('#recallInput').value;$('#diffOutput').innerHTML=actual?diffWords(actual,e.definition):'<span class="add">Answer revealed.</span>';$('#answerPanel').classList.remove('hidden');$('#recallActionRow').classList.add('hidden');$('#nextRecallBtn').focus()}
+function retryCurrentAttempt(){const s=state.session;if(!s||s.ended)return;const order=s.queue.map(e=>`${e.bankId}:${e.entryIndex}`);startSession({config:s.config,order})}
+function revealAnswer(){const s=state.session;if(!s||s.feedback||!s.config.revealAllowed)return;finalizeEntry({status:'revealed'})}
+function nextRecall(){if(!state.session?.feedback)return;advanceEntry()}
+function updateProgress(){const s=state.session;if(!s)return;if(s.config.sessionType==='time'){const total=durationMs(s.config),left=Math.max(0,total-elapsedMs());$('#progressMain').textContent=`${(left/1000).toFixed(left<10000?1:0)}s`;$('#progressSub').textContent=`${s.processed} definitions`;}else{$('#progressMain').textContent=`${Math.min(s.processed+1,targetDefinitionCount(s))} / ${targetDefinitionCount(s)}`;$('#progressSub').textContent=`${s.completed} correct • ${s.missed} missed`}}
+function durationMs(config){return 1000*Math.max(1,config.timePreset==='custom'?Number(config.customTime)||60:Number(config.timePreset)||60)}
+function tickSession(){const s=state.session;if(!s||s.paused||s.ended)return;updateProgress();if(s.config.sessionType==='time'&&elapsedMs()>=durationMs(s.config)){if(currentEntry()&&!s.feedback)s.incomplete++;endSession()}}
+function recordSample(){const s=state.session;if(!s||s.paused||s.ended)return;const stats=computeStats({elapsedMs:elapsedMs(),correctChars:s.correctChars,incorrectChars:s.incorrectChars,rawChars:s.rawChars,samples:s.samples});s.samples.push(stats.wpm);s.accuracySamples.push(stats.accuracy)}
+function togglePause(){const s=state.session;if(!s||s.config.sessionType==='time')return;if(!s.paused){s.paused=true;s.pauseStartedAt=performance.now();$('#pausedOverlay').classList.remove('hidden');$('#pauseBtn').textContent='resume'}else{s.pausedMs+=performance.now()-s.pauseStartedAt;s.paused=false;$('#pausedOverlay').classList.add('hidden');$('#pauseBtn').textContent='pause';(s.config.studyMode==='typing'?$('#typingCapture'):$('#recallInput')).focus()}}
+function restartSession(){const s=state.session;if(!s)return;if(!confirm('Restart this attempt from the beginning?'))return;retryCurrentAttempt()}
+function newSession(){if(state.session&&!state.session.ended&&state.view==='session'&&!confirm('Leave this attempt and return to setup?'))return;if(state.session){clearInterval(state.session.timerId);clearInterval(state.session.sampleTimer)}state.session=null;switchView('setup');renderSetup()}
+function finishStats(s){const stats=computeStats({elapsedMs:s.elapsedFinal,correctChars:s.correctChars,incorrectChars:s.incorrectChars,rawChars:s.rawChars,samples:s.samples});return{...stats,correctChars:s.correctChars,incorrectChars:s.incorrectChars,rawChars:s.rawChars,completed:s.completed,missed:s.missed,skipped:s.skipped,revealed:s.revealed,incomplete:s.incomplete,processed:s.processed,elapsedMs:s.elapsedFinal,subjectStats:s.subjectStats,samples:s.samples.slice(),accuracySamples:s.accuracySamples.slice()}}
+function endSession(){const s=state.session;if(!s||s.ended)return;s.ended=true;s.endedAt=performance.now();s.elapsedFinal=elapsedMs();clearInterval(s.timerId);clearInterval(s.sampleTimer);const result=finishStats(s);const order=s.queue.map(e=>`${e.bankId}:${e.entryIndex}`);state.lastSession={config:structuredClone(s.config),order,result};appendHistory(result,s.config);renderResults(result,s.config);switchView('results')}
+function appendHistory(result,config){state.history.unshift({id:makeId('session'),at:new Date().toISOString(),studyMode:config.studyMode,matchMode:config.matchMode,sessionType:config.sessionType,length:config.sessionType==='time'?`${config.timePreset==='custom'?config.customTime:config.timePreset}s`:config.definitionPreset,banks:getSelectedBanks(config).map(b=>b.name),mixStrategy:config.mixStrategy,repeatPolicy:config.repeatPolicy,wpm:result.wpm,accuracy:result.accuracy,completed:result.completed,missed:result.missed});state.history=state.history.slice(0,30);saveHistory();renderHistory()}
+function renderResults(r,config){$('#resultWpm').textContent=Math.round(r.wpm);$('#resultAccuracy').textContent=`${r.accuracy.toFixed(1)}%`;const items=[['raw wpm',r.rawWpm.toFixed(1)],['consistency',`${r.consistency.toFixed(1)}%`],['correct chars',r.correctChars],['incorrect chars',r.incorrectChars],['completed',r.completed],['missed',r.missed],['revealed',r.revealed],['incomplete',r.incomplete],['elapsed',`${(r.elapsedMs/1000).toFixed(1)}s`]];$('#statsGrid').innerHTML=items.map(([k,v])=>`<div class="stat-box"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');const subjects=Object.values(r.subjectStats);$('#subjectBreakdown').innerHTML=subjects.length?`<table class="subject-table"><thead><tr><th>subject</th><th>items</th><th>accuracy</th><th>missed</th></tr></thead><tbody>${subjects.map(s=>{const d=s.correctChars+s.incorrectChars;const a=d?s.correctChars/d*100:0;return`<tr><td>${esc(s.name)}</td><td>${s.count}</td><td>${a.toFixed(1)}%</td><td>${s.missed}</td></tr>`}).join('')}</tbody></table>`:'<span class="subtle">No scored subjects.</span>';$('#resultSessionLabel').textContent=`${config.studyMode} • ${config.matchMode} • ${config.repeatPolicy==='exhaust'?'exhaust first':'repeats allowed'}`;requestAnimationFrame(()=>drawPerformanceGraph(r.samples,r.accuracySamples))}
+function drawPerformanceGraph(wpm,accuracy){const c=$('#performanceGraph'),ctx=c.getContext('2d'),ratio=devicePixelRatio||1,rect=c.getBoundingClientRect();c.width=Math.max(300,Math.floor(rect.width*ratio));c.height=Math.floor(220*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);const W=rect.width,H=220;ctx.clearRect(0,0,W,H);ctx.strokeStyle='#383a3e';ctx.lineWidth=1;for(let y=30;y<200;y+=40){ctx.beginPath();ctx.moveTo(35,y);ctx.lineTo(W-15,y);ctx.stroke()}const line=(arr,color,maxOverride)=>{if(arr.length<1)return;const max=maxOverride||Math.max(10,...arr)*1.15;ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();arr.forEach((v,i)=>{const x=35+(W-55)*(arr.length===1?0:i/(arr.length-1));const y=195-(Math.min(v,max)/max)*155;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()};line(wpm,'#e2b714');line(accuracy,'#7aa2a9',100);ctx.fillStyle='#777b84';ctx.font='10px ui-monospace, monospace';ctx.fillText('wpm',38,17);ctx.fillStyle='#e2b714';ctx.fillRect(66,10,15,2);ctx.fillStyle='#777b84';ctx.fillText('accuracy',95,17);ctx.fillStyle='#7aa2a9';ctx.fillRect(151,10,15,2)}
+function retrySession(randomize=false){const l=state.lastSession;if(!l)return;if(randomize)startSession({config:l.config});else startSession({config:l.config,order:l.order})}
+
+function openDrawer(id){closeDrawers();$('#drawerBackdrop').classList.add('open');const d=$(id);d.classList.add('open');d.setAttribute('aria-hidden','false');if(id==='#banksDrawer')renderBankManager();if(id==='#historyDrawer')renderHistory()}
+function closeDrawers(){$('.drawer-backdrop')?.classList.remove('open');$$('.drawer').forEach(d=>{d.classList.remove('open');d.setAttribute('aria-hidden','true')})}
+function renderHistory(){const h=$('#historyList');h.innerHTML=state.history.length?state.history.map(x=>`<div class="history-item"><div><div>${esc(x.banks.join(', '))}</div><div class="meta">${new Date(x.at).toLocaleString()} • ${esc(x.studyMode)} • ${esc(String(x.length))} • ${esc(x.repeatPolicy==='exhaust'?'exhaust first':'repeats allowed')}</div></div><div class="history-score"><div>${Math.round(x.wpm)} wpm</div><div class="meta">${Number(x.accuracy).toFixed(1)}%</div></div></div>`).join(''):'<span class="subtle">No sessions yet.</span>'}
+
+function bindEvents(){
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-setting] [data-value]');if(b){const group=b.closest('[data-setting]'),key=group.dataset.setting,val=b.dataset.value,prev=state.settings[key];state.settings[key]=val;if(key==='studyMode')updateModeDefault(prev,val);saveSettings();renderSetup();return}
+    const p=e.target.closest('[data-preset]');if(p){if(p.dataset.preset==='definition')state.settings.definitionPreset=p.dataset.value;else state.settings.timePreset=p.dataset.value;saveSettings();renderSetup();return}
+    const bi=e.target.closest('[data-bank-id]');if(bi){state.activeBankId=bi.dataset.bankId;renderBankManager();return}
+  });
+  $('#bankSource').onchange=e=>{state.settings.bankSource=e.target.value;saveSettings();renderSetup()};$('#singleBank').onchange=e=>{state.settings.singleBankId=e.target.value;saveSettings();renderSetup()};$('#selectedBanksChecks').onchange=e=>{if(!e.target.dataset.bankCheck)return;const id=e.target.dataset.bankCheck;state.settings.selectedBankIds=e.target.checked?[...new Set([...state.settings.selectedBankIds,id])]:state.settings.selectedBankIds.filter(x=>x!==id);saveSettings();renderSetup()};
+  $('#matchMode').onchange=e=>{state.settings.matchMode=e.target.value;saveSettings()};$('#customLength').onchange=e=>{const v=Math.max(1,Number(e.target.value)||1);if(state.settings.sessionType==='definitions')state.settings.customDefinitionCount=v;else state.settings.customTime=v;saveSettings();renderSetup()};['allowCorrections','revealAllowed'].forEach(id=>$('#'+id).onchange=e=>{state.settings[id]=e.target.checked;saveSettings()});
+  $('#startBtn').onclick=()=>startSession();$('#typingStage').onclick=()=>$('#typingCapture').focus();$('#typingTerm').onclick=()=>$('#typingCapture').focus();$('#typingStage').onkeydown=e=>{if(e.key.length===1||e.key==='Backspace')$('#typingCapture').focus()};$('#typingCapture').oninput=handleTypingInput;$('#typingCapture').onkeydown=e=>{if(!state.session?.config.allowCorrections&&['Backspace','Delete'].includes(e.key))e.preventDefault();if(e.key==='Tab'){e.preventDefault();$('#typingCapture').focus()}};
+  $('#submitRecallBtn').onclick=submitRecall;$('#recallInput').onkeydown=e=>{if(e.key==='Tab'){e.preventDefault();submitRecall()}};$('#nextRecallBtn').onclick=nextRecall;$('#revealBtn').onclick=revealAnswer;$('#recallRetryBtn').onclick=retryCurrentAttempt;$('#typingRetryBtn').onclick=retryCurrentAttempt;
+  $('#pauseBtn').onclick=togglePause;$('#restartBtn').onclick=restartSession;$('#newSessionBtn').onclick=newSession;$('#resultNewBtn').onclick=newSession;$('#retryBtn').onclick=()=>retrySession(false);$('#retryRandomBtn').onclick=()=>retrySession(true);
+  $('#banksBtn').onclick=()=>openDrawer('#banksDrawer');$('#manageBanksInline').onclick=()=>openDrawer('#banksDrawer');$('#historyBtn').onclick=()=>openDrawer('#historyDrawer');$('#helpBtn').onclick=()=>openDrawer('#helpDrawer');$('#drawerBackdrop').onclick=closeDrawers;$$('.close-drawer').forEach(b=>b.onclick=closeDrawers);
+  $('#newBankBtn').onclick=newBank;$('#saveBankBtn').onclick=saveActiveBank;$('#duplicateBankBtn').onclick=duplicateBank;$('#deleteBankBtn').onclick=deleteBank;$('#exportTxtBtn').onclick=()=>{const b=state.banks.find(x=>x.id===state.activeBankId);if(b)exportBankText(b)};$('#exportJsonBtn').onclick=()=>{const b=state.banks.find(x=>x.id===state.activeBankId);if(b)exportBankJson(b)};$('#exportAllBtn').onclick=exportBackup;$('#importBankBtn').onclick=()=>$('#fileInput').click();$('#importBackupBtn').onclick=()=>$('#fileInput').click();$('#fileInput').onchange=async e=>{await importFiles([...e.target.files]);e.target.value=''};
+  $('#clearHistoryBtn').onclick=()=>{if(confirm('Clear local session history?')){state.history=[];saveHistory();renderHistory();notify('History cleared.')}};
+  $('#brandHome').onclick=newSession;$('#brandHome').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();newSession()}};
+  document.addEventListener('keydown',e=>{if($('.drawer.open')){if(e.key==='Escape')closeDrawers();return}if(state.view==='results'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){if(e.key.toLocaleLowerCase()==='r'){e.preventDefault();retrySession(false)}if(e.key.toLocaleLowerCase()==='n'){e.preventDefault();newSession()}}else if(state.view==='session'&&e.key==='Enter'){e.preventDefault();retryCurrentAttempt()}else if(state.view==='session'&&e.key==='Escape'){e.preventDefault();restartSession()}});
+  window.addEventListener('resize',()=>{if(state.view==='results'&&state.lastSession)drawPerformanceGraph(state.lastSession.result.samples,state.lastSession.result.accuracySamples)})
+}
+
+function init(){loadPersistedState();bindEvents();renderSetup();renderHistory();$('#pauseBtn').classList.toggle('hidden',state.settings.sessionType==='time')}
+init();
+</script>
+</body>
+</html>
