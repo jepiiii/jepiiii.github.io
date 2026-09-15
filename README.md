@@ -1,45 +1,63 @@
 # ECE Type Review
 
-A Monkeytype-inspired active-recall and definition typing reviewer for Electronics Engineering study banks.
+A keyboard-first study platform for Electronics Engineering and other course material.
 
-This repository is designed to deploy directly on **GitHub Pages**. The core reviewer remains usable locally in the browser, while optional **Supabase** integration adds accounts and a shared community bank library.
+## Two bank types
 
-## Features
+### TypeLearning
+Term/definition banks used with:
+- Typing mode
+- Recall mode
+- Strict or Learning-Friendly matching
 
-- Typing and Recall modes
-- Definition-count and timed sessions
-- Single-bank, selected-bank, and mixed-bank sessions
-- Random or balanced mixing
-- Configurable repeat policy
-- Strict or learning-friendly matching
-- JSON/TXT bank import and export
-- Local history and settings
-- Optional email/password accounts
-- Public community bank search
-- Search by bank name, subject, description, definitions, or uploader username
-- Uploader attribution on every community result
-- Publish local banks as public or private cloud banks
-- Add community banks into the local reviewer with one click
-- Owner-only editing/deletion enforced by Supabase Row Level Security
+Legacy JSON banks with no `type` field still import as TypeLearning.
 
-## Files
+### Multiple Choice
+Question banks with:
+- 2–6 choices per question
+- optional explanations
+- shuffled choices by default
+- number-key answering (`1`–`6`)
+- MCQ-specific score/accuracy/response-time results
 
-- `index.html` — reviewer UI and existing review engine
-- `cloud.js` — account, publishing, search, and community-bank integration
-- `supabase-config.js` — your public Supabase project URL and publishable/anon key
-- `supabase/schema.sql` — database schema, policies, profile trigger, and search RPC
-- `SETUP.md` — deployment instructions
+## Persistent coverage
+
+The old session-only repeat policy has been replaced by persistent bank coverage.
+
+- An entry becomes encountered as soon as it is shown.
+- Aborting or closing a session does not make it unseen again.
+- New sessions draw only unseen entries.
+- If fewer unseen entries remain than the requested session length, the session uses the remaining entries and stops at 100%.
+- Reset Coverage makes every entry eligible again without deleting lifetime correct/incorrect/reveal statistics.
+- Guests store progress locally.
+- Signed-in users sync progress for community/cloud banks through Supabase.
+
+## Community banks
+
+Public banks show:
+- TypeLearning or Multiple Choice badge
+- subject
+- entry count
+- uploader username
+- description
+
+Search supports bank names, subjects, uploaders, TypeLearning content, MCQ questions, choices, and explanations. Results can be filtered by bank type.
 
 ## Deployment
 
-See [SETUP.md](SETUP.md).
+This repository is a static GitHub Pages application. No build command is required.
 
-The intended production URL for this repository is:
+Important deployment files:
 
-`https://jepiiii.github.io/`
+```text
+index.html
+app.js
+cloud.js
+supabase-config.js
+BANK_GENERATOR_PROMPT.txt
+SETUP.md
+supabase/
+  schema.sql
+```
 
-## Security
-
-The browser uses only a Supabase **publishable/anon key**. That key is expected to be public. Database access is protected with Postgres Row Level Security policies in `supabase/schema.sql`.
-
-Never put a Supabase secret key or server-only credential in this repository.
+See `SETUP.md` before deploying this version because the Supabase schema must be migrated once.

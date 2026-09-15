@@ -1,0 +1,244 @@
+ECE TYPE REVIEW — UNIVERSAL BANK GENERATION PROMPT
+
+I am attaching course materials that must be converted into one or more directly importable banks for a study website called ECE Type Review.
+
+Treat this prompt as complete and self-contained. Do not assume access to any previous chat.
+
+The attached materials may include selectable PDFs, scanned PDFs, flattened PDFs, PowerPoint files, flattened PowerPoint exports, screenshots, slide images, diagrams, tables, graphs, equations, annotations, handwritten notes, or other image-based course material.
+
+CAREFULLY INSPECT ALL ATTACHED MATERIALS.
+
+If text extraction is incomplete or the material is flattened/image-based, visually inspect the pages/slides and use image understanding as necessary. Important information may exist only inside figures, labels, tables, circuit diagrams, equations, callout boxes, example problems, captions, or handwritten annotations. Do not assume extracted text contains everything.
+
+If something cannot be read confidently, do not invent it. Mention the unreadable page/slide/section in the final report.
+
+==================================================
+BANK TYPE SELECTION
+==================================================
+
+ECE Type Review supports two separate bank types:
+
+1. TYPELEARNING
+   Term + definition/concept banks used for typing and recall.
+
+2. MULTIPLE CHOICE
+   Question + choices banks used for MCQ practice.
+
+If I explicitly specify one of these, obey it:
+
+BANK TYPE: TYPELEARNING
+BANK TYPE: MULTIPLE CHOICE
+BANK TYPE: BOTH
+
+If I do not specify a type:
+
+- Ordinary lecture notes, textbooks, concept slides, formulas, diagrams, and explanatory course material should normally become TYPELEARNING.
+- Existing quizzes/exams/reviewer materials that already contain questions with choices should normally become MULTIPLE CHOICE and should preserve the original question and choice wording as closely as possible.
+- If the source clearly contains both substantial conceptual material and substantial existing MCQs, you may create separate banks for each type.
+
+Do not mix TypeLearning and MCQ entries inside one bank.
+
+==================================================
+SOURCE AUTHORITY
+==================================================
+
+Use the attached course material as the primary source of truth.
+
+Do not silently add outside facts, corrections, or expanded explanations unless I explicitly ask for outside research.
+
+You may fix obvious OCR/formatting artifacts and combine fragmented source statements, but preserve the intended technical meaning and terminology of the material.
+
+==================================================
+TYPELEARNING BANK RULES
+==================================================
+
+Each entry contains:
+
+- term
+- definition
+
+Definitions should generally be 1–3 concise sentences and must be self-contained, technically accurate according to the source, specific enough to identify the term, and useful in both directions:
+
+Typing Mode: definition is shown and the user types it.
+Recall Mode: term is shown and the user recalls/types the definition.
+
+Extract academically important terminology, laws, theorems, methods, quantities, relationships, operating principles, component functions, assumptions, conditions, limitations, distinctions, formulas and their meaning, graph interpretations, circuit behavior, system behavior, and reusable problem-solving techniques.
+
+Merge duplicate or near-duplicate concepts.
+
+Do not include instructor names, deadlines, classroom instructions, page numbers, decorative slide text, grading information, or trivial headings.
+
+TYPE-SAFE MATHEMATICS FOR TYPELEARNING
+
+TypeLearning definitions must be practical to type on a normal keyboard.
+
+Avoid mathematical Unicode when normal text can express the same meaning. Spell out:
+
+lambda
+omega
+delta
+theta
+mu
+pi
+x squared
+x cubed
+x sub n
+square root of x
+f prime of x
+less than or equal to
+greater than or equal to
+approximately equal to
+not equal to
+approaches
+infinity
+plus or minus
+summation of
+integral of
+
+Simple ASCII formulas are allowed when easy to type, for example:
+
+V = IR
+P = VI
+f = 1 / T
+X = 2 * pi * f * L
+
+For complicated expressions, explain the relationship in clear English rather than forcing hard-to-type notation.
+
+TYPELEARNING JSON FORMAT
+
+{
+  "name": "Subject Name",
+  "type": "typelearning",
+  "entries": [
+    {
+      "term": "Term or Concept",
+      "definition": "Definition or explanation"
+    }
+  ]
+}
+
+Legacy compatibility allows omission of "type", but generated banks SHOULD include it.
+
+==================================================
+MULTIPLE CHOICE BANK RULES
+==================================================
+
+Each MCQ entry contains:
+
+- question
+- choices
+- correctIndex
+- explanation (optional but strongly preferred when the source supports one)
+
+Use 2–6 nonempty choices.
+
+`correctIndex` is ZERO-BASED:
+
+0 = first choice
+1 = second choice
+2 = third choice
+3 = fourth choice
+4 = fifth choice
+5 = sixth choice
+
+If the source already contains MCQ questions and choices:
+
+- preserve the stated question wording and choices as closely as possible
+- do not paraphrase unless needed to repair obvious OCR/formatting corruption
+- preserve the indicated correct answer when supported by the source
+- if the source answer cannot be determined confidently, do not guess; report the item as ambiguous/unusable instead of inserting it
+
+If I explicitly ask you to CREATE MCQs from ordinary course material:
+
+- every correct answer must be supported by the source
+- distractors should be plausible but clearly incorrect according to the source
+- avoid trick questions, ambiguous wording, or multiple defensible correct answers
+- explanations must be source-grounded
+- cover the whole material rather than concentrating on the first pages/slides
+
+Because MCQ answers are clicked rather than typed, standard mathematical notation from the source may be preserved when it improves clarity. Never introduce symbols you cannot read confidently from the material.
+
+MULTIPLE CHOICE JSON FORMAT
+
+{
+  "name": "Subject Name — Multiple Choice",
+  "type": "multiple_choice",
+  "entries": [
+    {
+      "question": "Question text",
+      "choices": [
+        "Choice A",
+        "Choice B",
+        "Choice C",
+        "Choice D"
+      ],
+      "correctIndex": 0,
+      "explanation": "Why the correct answer is correct, based on the course material."
+    }
+  ]
+}
+
+==================================================
+SUBJECT ORGANIZATION
+==================================================
+
+If all files belong to one subject, create one bank for the requested bank type.
+
+If the attachments clearly contain unrelated subjects, create a separate JSON bank for each subject.
+
+Do not split one subject merely because it has multiple chapters.
+
+Use the actual course/subject name from the source when available.
+
+==================================================
+VISUAL MATERIAL
+==================================================
+
+Do not ignore information because it appears visually.
+
+Inspect diagrams, circuits, graphs, waveforms, flowcharts, tables, labels, equations, and annotations for testable information such as component function, signal flow, feedback behavior, operating region, bias condition, resonance, cutoff behavior, frequency response, phase relationship, stability, transient response, classifications, comparisons, and method steps.
+
+==================================================
+COVERAGE AND QUALITY CONTROL
+==================================================
+
+Before finalizing:
+
+1. Inspect the complete material, including later pages/slides.
+2. Check that every major topic was considered.
+3. Remove duplicates and near-duplicates.
+4. Verify technical meaning against the source.
+5. Check formulas, units, choices, and correct answers carefully.
+6. Do not blindly copy OCR errors.
+7. Ensure TypeLearning definitions are typing-friendly.
+8. Ensure MCQs have 2–6 choices and exactly one valid correctIndex.
+9. Ensure every term/definition or question/choice field is nonempty.
+10. Validate the output as strict JSON with no comments, trailing commas, markdown, or unsupported fields.
+
+Do not arbitrarily stop at a small number of entries. Generate as many entries as are academically justified by the source.
+
+==================================================
+FINAL DELIVERABLE
+==================================================
+
+The primary deliverable must be downloadable `.json` bank file(s) directly importable into ECE Type Review.
+
+Do not paste the entire bank into chat unless explicitly requested.
+
+After creating the file(s), provide a concise report containing:
+
+- bank name
+- bank type
+- number of entries
+- source files used
+- unreadable/ambiguous sections
+- material intentionally excluded
+
+Priorities, in order:
+
+1. ACCURACY TO THE COURSE MATERIAL
+2. COMPLETE COVERAGE
+3. CORRECT BANK TYPE/SCHEMA
+4. CLEAR STUDY VALUE
+5. NO DUPLICATES
+6. VALID IMPORTABLE JSON
